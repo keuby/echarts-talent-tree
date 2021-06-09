@@ -1,6 +1,6 @@
-import { EChartOption, ECharts } from 'echarts';
-import { computeYCoord, getCoordCreator, getElCreator, registerGroup } from './utils';
-import { ItemExtraData, GroupRecord, PointType, ItemRecord, LinkRecord } from './definations';
+import { ECharts, EChartOption } from 'echarts';
+import { computeYCoord, getCoordCreator, getElCreator, parseItem, registerGroup } from './utils';
+import { ItemExtraData, GroupRecord, PointType, ItemRecord } from './definations';
 
 export class TalentTree {
   data: GroupRecord[] = [];
@@ -85,19 +85,6 @@ export class TalentTree {
     }
   }
 
-  /**
-   * 将某一项原始数据解析成对象
-   * @param data 原始数据数据
-   */
-  private parseItem(data: number[]): LinkRecord {
-    const [group, fromKey, toKey, value] = data;
-    const to = Math.abs(toKey);
-    const from = Math.abs(fromKey);
-    const toType = toKey > 0 ? PointType.GROUP : PointType.NORMAL;
-    const fromType = fromKey > 0 ? PointType.GROUP : PointType.NORMAL;
-    return { group, left: from, leftType: fromType, right: to, rightType: toType, value };
-  }
-
   private getItemRecord(key: number, type: PointType, current: ItemRecord) {
     let itemRecord: ItemRecord;
     if (type === PointType.GROUP) {
@@ -122,7 +109,7 @@ export class TalentTree {
   }
 
   private createGrouRecord(itemData: number[]) {
-    const { left, leftType, right, rightType, group, value } = this.parseItem(itemData);
+    const { left, leftType, right, rightType, group, value } = parseItem(itemData);
     const groupRecord = {} as GroupRecord;
     const currentItemRecord = {} as ItemRecord;
     const leftItemRecord = this.getItemRecord(left, leftType, currentItemRecord);

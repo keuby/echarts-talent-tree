@@ -261,9 +261,9 @@
     picomatch "^2.2.2"
 
 "@types/echarts@^4.9.7":
-  version "4.9.7"
-  resolved "https://registry.yarnpkg.com/@types/echarts/-/echarts-4.9.7.tgz#4437fb503111f5b1ed7961e7b95c7ed09a4844a3"
-  integrity sha512-+klqEur0+bh1UjR6EpGE023vxpqzPSk58X5JwVEIBu0NOYMaMPKeM/TMnbL43BlDUZv4xttZFdeDdOtFk/YwzQ==
+  version "4.9.8"
+  resolved "https://registry.yarnpkg.com/@types/echarts/-/echarts-4.9.8.tgz#a69779ca4755eb29b61387af4e15ec324623f866"
+  integrity sha512-ViycwegdqQ+cDPgXtcTOklt3L59QfcKraSbUiHJ3KoaOptZQtWs2+hB9NCLN1UerB5i5a6wlUBprtwnNm5qIfQ==
   dependencies:
     "@types/zrender" "*"
 
@@ -465,12 +465,12 @@ debug@^4.1.0:
   dependencies:
     ms "2.1.2"
 
-echarts@4.9.0:
-  version "4.9.0"
-  resolved "https://registry.yarnpkg.com/echarts/-/echarts-4.9.0.tgz#a9b9baa03f03a2a731e6340c55befb57a9e1347d"
-  integrity sha512-+ugizgtJ+KmsJyyDPxaw2Br5FqzuBnyOWwcxPKO6y0gc5caYcfnEUIlNStx02necw8jmKmTafmpHhGo4XDtEIA==
+echarts@3.8.4:
+  version "3.8.4"
+  resolved "https://registry.yarnpkg.com/echarts/-/echarts-3.8.4.tgz#57d48738cf64ac3fcbcdf53dee7a7b31301b8ca2"
+  integrity sha512-4ZbiPnvehck63iqxTKdUNglcQPPCoYIvesBPAr/ncQoV9OO+aWds+d+bOcCiCdWqZfiOzQXo+FjjudMBcwmtgQ==
   dependencies:
-    zrender "4.3.2"
+    zrender "3.7.3"
 
 electron-to-chromium@^1.3.723:
   version "1.3.743"
@@ -817,7 +817,7 @@ vue@^3.0.11:
     "@vue/runtime-dom" "3.0.11"
     "@vue/shared" "3.0.11"
 
-zrender@4.3.2:
-  version "4.3.2"
-  resolved "https://registry.yarnpkg.com/zrender/-/zrender-4.3.2.tgz#ec7432f9415c82c73584b6b7b8c47e1b016209c6"
-  integrity sha512-bIusJLS8c4DkIcdiK+s13HiQ/zjQQVgpNohtd8d94Y2DnJqgM1yjh/jpDb8DoL6hd7r8Awagw8e3qK/oLaWr3g==
+zrender@3.7.3:
+  version "3.7.3"
+  resolved "https://registry.yarnpkg.com/zrender/-/zrender-3.7.3.tgz#4d8e643aa18054d177afcf75d89b9e4ad44134c3"
+  integrity sha512-ujXpz/TW0IoVLp/ufOLbrrXQU9TZsxn5wTvINkWf8pHzUGmFkgh9bMUj0BteGgnJnNJDL0FxNV690P/y+rYJOg==

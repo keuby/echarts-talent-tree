@@ -2,8 +2,8 @@ import { EChartOption } from 'echarts/lib/echarts';
 import { LinkRecord, PointType, ItemRecord, Coord, Context } from './definations';
 
 /**
- * 将原始的 series 数据转化为对象
- * @param data series item 数据
+ * 将某一项原始数据转化为对象
+ * @param data 一项原始数据
  * @returns
  */
 export function parseItem(data: number[]): LinkRecord {

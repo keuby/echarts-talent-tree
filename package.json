@@ -7,7 +7,7 @@
     "dev": "vite"
   },
   "dependencies": {
-    "echarts": "4.9.0",
+    "echarts": "3.8.4",
     "mockjs": "^1.1.0",
     "vue": "^3.0.11"
   },

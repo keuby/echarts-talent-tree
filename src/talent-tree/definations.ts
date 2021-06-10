@@ -8,6 +8,8 @@ export type PolylineStyle = EChartOption.SeriesCustom.RenderItemReturnPolyline['
   lineDash?: number[];
 };
 
+export type RectStyle = EChartOption.SeriesCustom.RenderItemReturnRect['style'];
+
 export interface GroupRect {
   x: number;
   y: number;

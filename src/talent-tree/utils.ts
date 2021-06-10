@@ -9,6 +9,7 @@ import {
   PolylineStyle,
   GroupRect,
   GroupContext,
+  RectStyle,
 } from './definations';
 
 /**
@@ -100,6 +101,23 @@ export function getCoordCreator(orders: number[]) {
   return createCoord;
 }
 
+export function createRect(
+  rect: GroupRect,
+  padding: number = 4,
+  style?: RectStyle
+): EChartOption.SeriesCustom.RenderItemReturnRect {
+  return {
+    type: 'rect',
+    shape: {
+      x: rect.x - padding,
+      y: rect.y - padding,
+      width: rect.width + padding * 2,
+      height: rect.height + padding,
+    },
+    style: Object.assign({ fill: 'none', stroke: '#f00' }, style),
+  };
+}
+
 export function createPolyline(
   points: number[][],
   style: PolylineStyle
@@ -140,7 +158,21 @@ export function getElCreator(colors: string[], dashLineStyle: PolylineStyle) {
       });
     }
 
-    return createPolyline(points, dashLineStyle);
+    const children = [record.left, record.right]
+      .filter((r) => r.type === PointType.GROUP && r.clust != null)
+      .map((r) => {
+        const ctx = renderContext[r.key] as GroupContext;
+        return createRect(ctx.rect);
+      });
+
+    const polyline = createPolyline(points, dashLineStyle);
+
+    return children.length > 0
+      ? {
+          type: 'group',
+          children: [polyline, ...children],
+        }
+      : polyline;
   };
 
   return createEl;

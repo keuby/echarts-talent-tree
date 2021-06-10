@@ -17,18 +17,20 @@ const App = defineComponent(() => {
       },
       xAxis: {
         type: 'category',
-        scale: true,
         axisLabel: {
           rotate: 90,
         },
         axisTick: {
-          alignWithLabel: true,
           show: false,
         },
       },
     });
 
-    const tt = new TalentTree(jsonData.data, jsonData.extras, ins);
+    const tt = new TalentTree({
+      data: jsonData.data,
+      extras: jsonData.extras,
+      echarts: ins,
+    });
 
     watchEffect(() => {
       const { seriesData, categories, renderItem } = tt.build(clust.value);
@@ -49,7 +51,7 @@ const App = defineComponent(() => {
           ],
         },
         {
-          // echarts4 以及以上版本需要添加该参数
+          //echarts4 以及以上版本需要添加该参数
           // replaceMerge: ['series'],
         }
       );
@@ -61,15 +63,23 @@ const App = defineComponent(() => {
     clust.value = target.value ? Number(target.value) : null;
   }
 
+  const clusts = Array.from(new Set(jsonData.extras.map((item) => item.clust))).map((clust) => ({
+    value: clust,
+    label: `聚类${clust}`,
+  }));
+  clusts.unshift({
+    value: null,
+    label: '全部',
+  });
+
   return () => (
     <div class="container">
       <div>
         <label>聚类：</label>
         <select onChange={onSelectChange}>
-          <option value={null}>全部</option>
-          <option value={0}>聚类0</option>
-          <option value={1}>聚类1</option>
-          <option value={2}>聚类2</option>
+          {clusts.map((clust) => (
+            <option value={clust.value}>{clust.label}</option>
+          ))}
         </select>
       </div>
       <div class="echart-host" ref={host}></div>

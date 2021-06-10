@@ -1,14 +1,31 @@
 import { ECharts, EChartOption } from 'echarts';
-import { computeYCoord, getCoordCreator, getElCreator, parseItem, registerGroup } from './utils';
-import { ItemExtraData, GroupRecord, PointType, ItemRecord } from './definations';
+import {
+  computeYCoord,
+  getCoordCreator,
+  getElCreator,
+  getGroupRectComputer,
+  parseItem,
+  registerGroup,
+} from './utils';
+import { ItemExtraData, GroupRecord, PointType, ItemRecord, PolylineStyle } from './definations';
+
+export interface TalentTreeOption {
+  data: number[][];
+  extras: ItemExtraData[];
+  echarts: ECharts;
+  dashLineStyle?: PolylineStyle;
+}
 
 export class TalentTree {
   data: GroupRecord[] = [];
   itemRecords: ItemRecord[] = [];
   groupRecords: GroupRecord[] = [];
+  private extras: ItemExtraData[];
+  private echarts: ECharts;
+  private dashLineStyle: PolylineStyle;
 
   /**
-   * 用户标记 series data 哪些项关联到 x 轴，哪些项关联到 y 轴
+   * 标记 series data 哪些项关联到 x 轴，哪些项关联到 y 轴
    */
   static encode = {
     y: 7,
@@ -50,8 +67,19 @@ export class TalentTree {
    *
    * @param echarts echarts 实例
    */
-  constructor(data: number[][], private extras: ItemExtraData[], private echarts: ECharts) {
-    this.initDataRecords(data);
+  constructor(options: TalentTreeOption) {
+    this.extras = options.extras;
+    this.echarts = options.echarts;
+    this.dashLineStyle = options.dashLineStyle || {
+      stroke: '#000',
+      lineDash: [5, 5],
+    };
+
+    const orders = this.createOrders(options.extras);
+    for (const item of options.data) {
+      const record = this.createGrouRecord(item, orders);
+      record && this.data.push(record);
+    }
   }
 
   build(clust?: any) {
@@ -65,7 +93,7 @@ export class TalentTree {
       extras = this.extras.filter((e) => e.clust === clust);
     }
 
-    const orders = extras.map((e) => e.order);
+    const orders = this.createOrders(extras);
     const categories = extras.map((e) => e.label);
     const seriesData = data.map(({ current: group, left: from, right: to, value }) => {
       return [group.key, from.key, from.type, from.min, to.key, to.type, to.max, value];
@@ -78,11 +106,12 @@ export class TalentTree {
     };
   }
 
-  private initDataRecords(data: number[][]) {
-    for (const item of data) {
-      const record = this.createGrouRecord(item);
-      record && this.data.push(record);
-    }
+  private createOrders(extras: ItemExtraData[]) {
+    const orders = [];
+    extras.forEach((item, index) => {
+      orders[item.order] = index;
+    });
+    return orders;
   }
 
   private getItemRecord(key: number, type: PointType, current: ItemRecord) {
@@ -108,7 +137,7 @@ export class TalentTree {
     return itemRecord;
   }
 
-  private createGrouRecord(itemData: number[]) {
+  private createGrouRecord(itemData: number[], orders: number[]) {
     const { left, leftType, right, rightType, group, value } = parseItem(itemData);
     const groupRecord = {} as GroupRecord;
     const currentItemRecord = {} as ItemRecord;
@@ -120,16 +149,18 @@ export class TalentTree {
     currentItemRecord.key = group;
     currentItemRecord.type = PointType.GROUP;
 
-    if (leftItemRecord.min > rightItemRecord.max) {
-      currentItemRecord.min = rightItemRecord.min;
-      currentItemRecord.max = leftItemRecord.max;
+    const minIndex = orders[leftItemRecord.min];
+    const maxIndex = orders[rightItemRecord.max];
+    if (minIndex > maxIndex) {
       groupRecord.left = rightItemRecord;
       groupRecord.right = leftItemRecord;
+      currentItemRecord.min = rightItemRecord.min;
+      currentItemRecord.max = leftItemRecord.max;
     } else {
-      currentItemRecord.min = leftItemRecord.min;
-      currentItemRecord.max = rightItemRecord.max;
       groupRecord.left = leftItemRecord;
       groupRecord.right = rightItemRecord;
+      currentItemRecord.min = leftItemRecord.min;
+      currentItemRecord.max = rightItemRecord.max;
     }
 
     if (groupRecord.left.clust === groupRecord.right.clust) {
@@ -144,8 +175,9 @@ export class TalentTree {
 
   private createRenderItem(orders: number[]): EChartOption.SeriesCustom.RenderItem {
     const colors = this.echarts.getOption().color;
-    const createEl = getElCreator(colors);
+    const createEl = getElCreator(colors, this.dashLineStyle);
     const createCoord = getCoordCreator(orders);
+    const computeGroupRect = getGroupRectComputer(orders);
 
     return (params, api) => {
       const context = params.context;
@@ -153,17 +185,18 @@ export class TalentTree {
       const record = this.groupRecords[group];
 
       // 计算相关性在Y轴的坐标点的值
-      const yCoord = computeYCoord(api, context, record.value);
+      const yCoord = computeYCoord(api, record.value);
 
       // 计算多边形的四个点坐标
       const leftCoord = createCoord(api, context, record.left, yCoord);
       const rightCoord = createCoord(api, context, record.right, yCoord);
+      const points = [leftCoord.bottom, leftCoord.top, rightCoord.top, rightCoord.bottom];
 
       // 注册该分组顶部中点位置的坐标，存储到上下文对象中
-      registerGroup(context, group, leftCoord.top, rightCoord.top);
+      const rect = computeGroupRect(api, record, yCoord);
+      const groupContext = registerGroup(context, record, points, rect);
 
-      const points = [leftCoord.bottom, leftCoord.top, rightCoord.top, rightCoord.bottom];
-      return createEl(points, record.current.clust);
+      return createEl(record, groupContext, context);
     };
   }
 }

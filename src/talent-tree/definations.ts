@@ -1,5 +1,26 @@
 import { EChartOption } from 'echarts/lib/echarts';
 
+export type RenderContext = EChartOption.SeriesCustom.RenderItemParams['context'];
+
+export type Coord = [number, number];
+
+export type PolylineStyle = EChartOption.SeriesCustom.RenderItemReturnPolyline['style'] & {
+  lineDash?: number[];
+};
+
+export interface GroupRect {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+export interface GroupContext {
+  rect: GroupRect;
+  coord: Coord;
+  points: Coord[];
+}
+
 export interface ItemExtraData {
   label: string;
   order: number;
@@ -35,7 +56,3 @@ export interface LinkRecord {
   rightType: PointType;
   value: number;
 }
-
-export type Context = EChartOption.SeriesCustom.RenderItemParams['context'];
-
-export type Coord = [number, number];

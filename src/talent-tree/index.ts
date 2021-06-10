@@ -5,7 +5,7 @@ import {
   getElCreator,
   getGroupRectComputer,
   parseItem,
-  registerGroup,
+  setGroupContext,
 } from './utils';
 import { ItemExtraData, GroupRecord, PointType, ItemRecord, PolylineStyle } from './definations';
 
@@ -194,7 +194,7 @@ export class TalentTree {
 
       // 注册该分组顶部中点位置的坐标，存储到上下文对象中
       const rect = computeGroupRect(api, record, yCoord);
-      const groupContext = registerGroup(context, record, points, rect);
+      const groupContext = setGroupContext(context, record, points, rect);
 
       return createEl(record, groupContext, context);
     };

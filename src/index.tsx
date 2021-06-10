@@ -63,14 +63,15 @@ const App = defineComponent(() => {
     clust.value = target.value ? Number(target.value) : null;
   }
 
-  const clusts = Array.from(new Set(jsonData.extras.map((item) => item.clust))).map((clust) => ({
-    value: clust,
-    label: `聚类${clust}`,
-  }));
-  clusts.unshift({
-    value: null,
-    label: '全部',
-  });
+  const clusts = Array.from(new Set(jsonData.extras.map((item) => item.clust)))
+    .map((clust) => ({
+      value: clust,
+      label: `聚类${clust}`,
+    }))
+    .concat({
+      value: null,
+      label: '全部',
+    });
 
   return () => (
     <div class="container">

@@ -30,7 +30,7 @@ export function getGroupContext(context: Record<string, any>, group: number) {
   return context[group] as GroupContext;
 }
 
-export function registerGroup(
+export function setGroupContext(
   context: Record<string, any>,
   record: GroupRecord,
   points: Coord[],

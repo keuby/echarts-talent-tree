@@ -192,7 +192,7 @@ export class TalentTree {
       const rightCoord = createCoord(api, context, record.right, yCoord);
       const points = [leftCoord.bottom, leftCoord.top, rightCoord.top, rightCoord.bottom];
 
-      // 注册该分组顶部中点位置的坐标，存储到上下文对象中
+      // 注册该分组顶部中点位置的坐标、所属矩形区域的坐标，存储到上下文对象中
       const rect = computeGroupRect(api, record, yCoord);
       const groupContext = setGroupContext(context, record, points, rect);
 

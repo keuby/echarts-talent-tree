@@ -101,38 +101,6 @@ export function getCoordCreator(orders: number[]) {
   return createCoord;
 }
 
-export function createRect(
-  rect: GroupRect,
-  padding: number = 4,
-  style?: RectStyle
-): EChartOption.SeriesCustom.RenderItemReturnRect {
-  return {
-    type: 'rect',
-    shape: {
-      x: rect.x - padding,
-      y: rect.y - padding,
-      width: rect.width + padding * 2,
-      height: rect.height + padding,
-    },
-    style: Object.assign({ fill: 'none', stroke: '#f00' }, style),
-  };
-}
-
-export function createPolyline(
-  points: number[][],
-  style: PolylineStyle
-): EChartOption.SeriesCustom.RenderItemReturnPolyline {
-  return {
-    type: 'polyline',
-    shape: { points },
-    style: {
-      ...style,
-      fill: 'none',
-    },
-    z2: 1000,
-  };
-}
-
 /**
  * 获取元素创建方法
  * @param colors 不同聚类分组的颜色序列
@@ -176,4 +144,37 @@ export function getElCreator(colors: string[], dashLineStyle: PolylineStyle) {
   };
 
   return createEl;
+}
+
+export function createRect(
+  rect: GroupRect,
+  padding: number = 4,
+  style?: RectStyle
+): EChartOption.SeriesCustom.RenderItemReturnRect {
+  return {
+    type: 'rect',
+    name: 'clust-rect',
+    shape: {
+      x: rect.x - padding,
+      y: rect.y - padding,
+      width: rect.width + padding * 2,
+      height: rect.height + padding,
+    },
+    z2: 1,
+    style: Object.assign({ fill: 'transparent', stroke: 'none' }, style),
+  };
+}
+
+export function createPolyline(
+  points: number[][],
+  style: PolylineStyle
+): EChartOption.SeriesCustom.RenderItemReturnPolyline {
+  return {
+    type: 'polyline',
+    shape: { points },
+    style: {
+      ...style,
+      fill: 'none',
+    },
+  };
 }
